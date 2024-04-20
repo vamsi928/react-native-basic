@@ -1,20 +1,48 @@
-import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View } from 'react-native';
+import React, { useState } from "react";
+import { StyleSheet, View, Pressable, Text } from "react-native";
+import { GoalInput } from "./components/GoalInput";
+import { GoalItem } from "./components/GoalItem";
+import { PressableButton } from "./components/PressableButton";
+import { StatusBar } from "expo-status-bar";
 
 export default function App() {
+  const [goals, setGoals] = useState([]);
+  const [showModal, setShowModal] = useState(false);
+  const onDeleteItem = (item) => {
+    let _goals = [...goals];
+    let presentIndex = _goals.findIndex((goal) => goal.id === item.id);
+    if (presentIndex !== -1) {
+      _goals.splice(presentIndex, 1);
+    }
+    setGoals(_goals);
+  };
+
   return (
-    <View style={styles.container}>
-      <Text>Open up App.js to start working on your app!</Text>
-      <StatusBar style="auto" />
-    </View>
+    <>
+      <StatusBar style="light" />
+      <View style={styles.appContainer}>
+        <View style={{ marginTop: 48 }}>
+          <PressableButton
+            onPress={() => setShowModal(true)}
+            title="Add Goal"
+          />
+        </View>
+        <GoalInput
+          goals={goals}
+          setGoals={setGoals}
+          showModal={showModal}
+          setShowModal={setShowModal}
+        />
+        <GoalItem goals={goals} onDeleteItem={onDeleteItem} />
+      </View>
+    </>
   );
 }
 
 const styles = StyleSheet.create({
-  container: {
+  appContainer: {
+    paddingTop: 54,
+    paddingHorizontal: 16,
     flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
   },
 });
